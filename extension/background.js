@@ -20,13 +20,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         log("Error pinging backend:", error.message);
         sendResponse({ error: error.message });
       });
-    return true; 
+    return true;
   }
 });
 
 async function handleEnhancePrompt(prompt, mode) {
   try {
-    const response = await fetch('http://localhost:3000/enhance', {
+    const response = await fetch('https://prompt-enhancer-vms9.onrender.com/enhance', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
