@@ -114,7 +114,7 @@ const showToast = (btn, message, isError = false) => {
   if (!container) return;
 
   const toast = document.createElement('div');
-  toast.className = \`enhancer-toast \${isError ? 'error' : ''} show\`;
+  toast.className = `enhancer-toast ${isError ? 'error' : ''} show`;
   toast.innerText = message;
   
   container.appendChild(toast);
@@ -130,8 +130,8 @@ const enhancePrompt = async (text, button, mode, isAuto = false) => {
 
   // Set loading state
   button.classList.add('loading');
-  button.innerHTML = \`\${icons.spinner} \${isAuto ? 'Auto-Enhancing...' : 'Enhancing...'}\`;
-  log(\`Enhancing prompt in \${mode} mode.\`);
+  button.innerHTML = `${icons.spinner} ${isAuto ? 'Auto-Enhancing...' : 'Enhancing...'}`;
+  log(`Enhancing prompt in ${mode} mode.`);
 
   try {
     const response = await chrome.runtime.sendMessage({
@@ -143,8 +143,8 @@ const enhancePrompt = async (text, button, mode, isAuto = false) => {
     if (response.error) throw new Error(response.error);
 
     button.classList.remove('loading');
-    button.innerHTML = \`\${icons.wand} Enhanced!\`;
-    setTimeout(() => button.innerHTML = \`\${icons.wand} Enhance\`, 2000);
+    button.innerHTML = `${icons.wand} Enhanced!`;
+    setTimeout(() => button.innerHTML = `${icons.wand} Enhance`, 2000);
 
     saveToHistory(response.enhancedPrompt);
     return response.enhancedPrompt;
@@ -156,7 +156,7 @@ const enhancePrompt = async (text, button, mode, isAuto = false) => {
     showToast(button, err.message, true);
     setTimeout(() => {
       button.classList.remove('error');
-      button.innerHTML = \`\${icons.wand} Enhance\`;
+      button.innerHTML = `${icons.wand} Enhance`;
     }, 3000);
     return null;
   }
@@ -190,7 +190,7 @@ const injectButtonForInput = (inputEl, prefs) => {
 
   const btn = document.createElement('button');
   btn.className = 'universal-enhancer-btn';
-  btn.innerHTML = \`\${icons.wand} Enhance\`;
+  btn.innerHTML = `${icons.wand} Enhance`;
   btn.type = 'button';
 
   // Manual Trigger
