@@ -55,7 +55,7 @@ app.post('/enhance', async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "llama3-70b-8192",
+      model: "llama-3.1-8b-instant",
       messages: [
         { role: "system", content: getSystemPrompt(mode || 'general') },
         { role: "user", content: `Raw Prompt:\n\n${raw_prompt}` }
