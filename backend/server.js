@@ -50,7 +50,7 @@ app.post('/enhance', async (req, res) => {
   }
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'Server configuration error: OPNEAI_API_KEY is not set.' });
+    return res.status(500).json({ error: 'Server configuration error: OPENAI_API_KEY is not set.' });
   }
 
   try {
