@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal Prompt Enhancer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="popup-container">
+    <header>
+      <div class="logo-container">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      </div>
+      <h1>Prompt Enhancer V2</h1>
+    </header>
+
+    <main>
+      <div class="setting-group">
+        <div class="setting-info">
+          <h3>Enable Enhancer</h3>
+          <p>Inject button on AI platforms</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="enableToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-info">
+          <h3>Auto-Enhance</h3>
+          <p>Enhance dynamically as you type</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoEnhanceToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-group vertical">
+        <h3>Enhancement Mode</h3>
+        <p>Tailor the AI output structure.</p>
+        <div class="select-wrapper">
+          <select id="modeSelector">
+            <option value="general">General (Default)</option>
+            <option value="coding">Software Engineering</option>
+            <option value="startup">Startup / Business Idea</option>
+            <option value="dsa">Data Structures & Algorithms</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="history-section">
+        <div class="history-header">
+          <h3>Recent Prompts</h3>
+          <button id="clearHistoryBtn" class="text-btn">Clear</button>
+        </div>
+        <div class="history-list" id="historyList">
+          <p class="empty-msg">No history yet.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p id="statusMessage">Settings sync across devices.</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
