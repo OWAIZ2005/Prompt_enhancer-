@@ -26,19 +26,17 @@ const injectStyles = () => {
 
     .enhancer-options-panel {
       display: none;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      grid-template-columns: repeat(2, 1fr);
       gap: 4px;
       background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 10px;
-      padding: 4px;
+      padding: 6px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       font-family: 'Inter', -apple-system, sans-serif;
       transition: all 0.2s ease;
-      max-width: calc(100vw - 120px);
+      max-width: 280px;
     }
 
     .enhancer-widget-container.show-options .enhancer-options-panel {
@@ -76,7 +74,8 @@ const injectStyles = () => {
     }
 
     .enhancer-auto-btn {
-      background: transparent;
+      grid-column: span 2;
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #888;
       cursor: pointer;
@@ -85,7 +84,21 @@ const injectStyles = () => {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
+      font-size: 11px;
       transition: all 0.2s ease;
+      margin-top: 2px;
+    }
+    
+    .enhancer-auto-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    
+    .enhancer-auto-btn.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .universal-enhancer-btn {
@@ -317,16 +330,10 @@ const injectButtonForInput = (inputEl, prefs) => {
     modeButtons.push(mBtn);
   });
 
-  const divider = document.createElement('div');
-  divider.style.width = '1px';
-  divider.style.height = '16px';
-  divider.style.background = 'rgba(255,255,255,0.1)';
-  panel.appendChild(divider);
-
   const autoToggle = document.createElement('button');
   autoToggle.type = 'button';
   autoToggle.className = `enhancer-auto-btn ${isAutoEnabled ? 'active' : ''}`;
-  autoToggle.innerHTML = icons.lightning;
+  autoToggle.innerHTML = `${icons.lightning} Auto-Enhance`;
   autoToggle.title = "Toggle Auto-Enhance";
   autoToggle.addEventListener('click', (e) => {
     e.preventDefault();
