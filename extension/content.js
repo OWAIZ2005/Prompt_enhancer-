@@ -26,6 +26,8 @@ const injectStyles = () => {
     .enhancer-options-panel {
       display: none;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
       gap: 4px;
       background: rgba(0, 0, 0, 0.95);
       backdrop-filter: blur(12px);
@@ -35,6 +37,7 @@ const injectStyles = () => {
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       font-family: 'Inter', -apple-system, sans-serif;
       transition: all 0.2s ease;
+      max-width: calc(100vw - 120px);
     }
 
     .enhancer-widget-container.show-options .enhancer-options-panel {
@@ -356,6 +359,14 @@ const injectButtonForInput = (inputEl, prefs) => {
   widget.appendChild(btn);
 
   parent.appendChild(widget);
+
+  // Click outside to close
+  const clickOutside = (e) => {
+    if (!widget.contains(e.target)) {
+      widget.classList.remove('show-options');
+    }
+  };
+  document.addEventListener('mousedown', clickOutside);
   
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
