@@ -57,7 +57,35 @@ const injectStyles = () => {
       display: flex !important;
       opacity: 1 !important;
       pointer-events: auto !important;
-      transform: translateX(0);
+      transform: translateX(0) translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .enhancer-widget-container {
+        flex-direction: column-reverse;
+        align-items: flex-end;
+        height: auto;
+        bottom: 6px;
+      }
+      .enhancer-options-panel {
+        flex-direction: column;
+        height: auto;
+        width: 160px;
+        min-width: 160px;
+        padding: 4px;
+        border-radius: 12px;
+        transform: translateY(10px);
+        margin-bottom: 8px;
+        align-items: stretch;
+      }
+      .enhancer-options-panel.active {
+        transform: translateY(0);
+      }
+      .mode-grid-btn {
+        text-align: left;
+        margin: 1px 0;
+        height: 28px;
+      }
     }
 
     @media (max-width: 1024px) {
