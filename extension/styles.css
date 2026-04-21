@@ -1,14 +1,14 @@
 :root {
-  --bg-color: #1a1a1f;
-  --surface-color: #26262e;
-  --surface-hover: #31313a;
-  --text-primary: #e4e6eb;
-  --text-secondary: #a0aab8;
-  --accent-color: #7b61ff;
-  --accent-hover: #9681ff;
-  --border-color: #383842;
-  --toggle-bg: #4f4f5c;
-  --toggle-checked: var(--accent-color);
+  --bg-color: #0a0a0a;
+  --surface-color: #141414;
+  --surface-hover: #1f1f1f;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --accent-color: #ffffff;
+  --accent-hover: #cccccc;
+  --border-color: #333333;
+  --toggle-bg: #333333;
+  --toggle-checked: #ffffff;
   --error: #ff5252;
 }
 
@@ -33,13 +33,13 @@ header {
 }
 
 .logo-container {
-  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  background: transparent;
+  border: 1px solid var(--border-color);
   padding: 8px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(167, 119, 227, 0.3);
 }
 
 .logo-container svg {
@@ -50,9 +50,7 @@ h1 {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  background: linear-gradient(135deg, #e4e6eb, #9ea4b0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 main {
@@ -133,7 +131,7 @@ main {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: #000000;
   transition: .3s;
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);

@@ -62,6 +62,20 @@ Ensure the prompt contains these native sections:
 - Emphasize mathematical correctness and the exploration of multiple approaches.`;
   }
 
+  if (mode === 'presentation') {
+    return baseSystem + `\n\nAdditionally, for Presentation mode (e.g. Gamma/Tome):
+- Transform the output into a slide-deck structure.
+- Include an "### 🎯 Objective" and "### 👥 Target Audience" section.
+- Output a "### 📊 Slide-by-Slide Breakdown", where each slide has a title, key bullet points, and optional visual suggestions.`;
+  }
+
+  if (mode === 'coding_practice') {
+    return baseSystem + `\n\nAdditionally, for Coding Practice mode:
+- Construct a real-world coding challenge (beyond just DSA).
+- Include strict sections: "### 🏢 Real-world Context", "### ⚙️ Constraints / Edge Cases", "### 🎯 Expected Output", and "### 💡 Optional Hints".
+- Emphasize practical application, problem-solving, and clean coding paradigms.`;
+  }
+
   return baseSystem; // Default 'general' mode
 };
 

@@ -21,12 +21,12 @@ const injectStyles = () => {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(30, 30, 36, 0.95);
+      background: rgba(0, 0, 0, 0.90);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
       padding: 4px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
       font-family: 'Inter', -apple-system, sans-serif;
     }
     .enhancer-mode-select {
@@ -44,13 +44,13 @@ const injectStyles = () => {
       color: white;
     }
     .enhancer-mode-select option {
-      background: #26262e;
+      background: #000;
       color: #fff;
     }
     .enhancer-auto-btn {
       background: transparent;
       border: none;
-      color: #a0aab8;
+      color: #888;
       cursor: pointer;
       padding: 6px;
       border-radius: 6px;
@@ -61,16 +61,16 @@ const injectStyles = () => {
     }
     .enhancer-auto-btn:hover {
       background: rgba(255, 255, 255, 0.1);
-      color: #e4e6eb;
+      color: #fff;
     }
     .enhancer-auto-btn.active {
-      color: #ffd700;
-      background: rgba(255, 215, 0, 0.15);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
     }
     .universal-enhancer-btn {
-      background: linear-gradient(135deg, #6e8efb, #a777e3);
-      color: white;
-      border: none;
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #ffffff;
       border-radius: 8px;
       padding: 6px 12px;
       font-size: 13px;
@@ -83,21 +83,26 @@ const injectStyles = () => {
     }
     .universal-enhancer-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(167, 119, 227, 0.3);
-      background: linear-gradient(135deg, #5b7be0, #9661d9);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+      background: #e6e6e6;
+      border-color: #e6e6e6;
     }
     .universal-enhancer-btn:active {
       transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
     }
     .universal-enhancer-btn.loading {
       background: #888;
+      border-color: #888;
+      color: #111;
       cursor: not-allowed;
       pointer-events: none;
       opacity: 0.8;
     }
     .universal-enhancer-btn.error {
-      background: #e74c3c;
+      background: #111;
+      border-color: #e74c3c;
+      color: #e74c3c;
     }
     .enhancer-container {
       position: relative;
@@ -106,7 +111,8 @@ const injectStyles = () => {
       position: absolute;
       bottom: 55px;
       right: 10px;
-      background: #333;
+      background: #111;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff;
       padding: 6px 10px;
       border-radius: 6px;
@@ -116,13 +122,14 @@ const injectStyles = () => {
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
     .enhancer-toast.show {
       opacity: 1;
     }
     .enhancer-toast.error {
-      background: #e74c3c;
+      border-color: #e74c3c;
+      color: #e74c3c;
     }
   `;
   document.head.appendChild(styleEl);
@@ -248,10 +255,12 @@ const injectButtonForInput = (inputEl, prefs) => {
   const select = document.createElement('select');
   select.className = 'enhancer-mode-select';
   const modes = [
-    { value: 'general', label: 'General' },
-    { value: 'coding', label: 'Coding' },
-    { value: 'startup', label: 'Startup' },
-    { value: 'dsa', label: 'DSA' }
+    { value: 'general', label: '🌐 General' },
+    { value: 'coding', label: '💻 Coding' },
+    { value: 'startup', label: '🚀 Startup' },
+    { value: 'dsa', label: '🧠 DSA' },
+    { value: 'presentation', label: '📊 Presentation' },
+    { value: 'coding_practice', label: '🏋️ Practice' }
   ];
   modes.forEach(m => {
     const opt = document.createElement('option');
