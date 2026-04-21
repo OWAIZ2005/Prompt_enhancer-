@@ -6,15 +6,18 @@
 
 ## 🌟 Features
 
-- **Native Injection:** Seamlessly injects a stylish "Enhance Prompt" wand button into any textarea/contenteditable field on the web.
-- **Dynamic Enhancement Modes:** 
-  - 🛠️ **General:** Standard, well-structured output.
+- **Smart Floating Widget:** Injects a dynamic, frosted-glass widget directly next to your text areas. Switch modes and toggle settings inline without ever opening an extension popup.
+- **Ultra-Premium Monochromatic UI:** A striking, minimalist black-and-white aesthetic designed to feel like a high-end dev tool.
+- **6 Dynamic Enhancement Domains:** 
+  - 🌐 **General:** Standard, beautifully formatted markdown sections.
   - 💻 **Software Engineering (Coding):** Emphasizes clean code, architecture, edge cases, and rigid tech stack formats.
-  - 📈 **Startup/Business:** Focuses on market analysis, monetization, and MVP validation.
+  - 🚀 **Startup/Business:** Focuses on market analysis, monetization, and MVP validation.
   - 🧠 **Data Structures & Algorithms (DSA):** Requires explicit time/space complexities, boundaries, and techniques.
-- **Auto-Enhance Mode:** Sit back and let the extension automatically enhance your prompt when you stop typing (1.5-second debounce).
-- **Prompt History:** Locally stores and displays your last 10 optimized prompts in the extension popup.
-- **Blazing Fast:** Powered by an ultra-fast backend model (`llama-3.1-8b-instant` via Groq) to ensure enhancements are near-instant.
+  - 📊 **Presentation Mode (NEW):** Generates structured slide-deck outlines (Title, Audience, Slide-by-slide visuals & points) perfect for importing into tools like Gamma or Tome.
+  - 🏋️ **Coding Practice (NEW):** Generates authentic real-world engineering challenges with strict constraints, edge cases, and expected outputs.
+- **Auto-Enhance Mode (⚡):** Sit back and let the extension automatically debounce and enhance your prompt when you stop typing.
+- **Strict Markdown Enforcement:** All AI outputs use bulleted lists and `###` headers for pristine readability without conversational filler.
+- **Blazing Fast:** Powered by `llama-3.1-8b-instant` via Groq.
 
 ---
 
