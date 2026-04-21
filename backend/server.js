@@ -17,26 +17,49 @@ const openai = new OpenAI({
 });
 const getSystemPrompt = (mode) => {
   const baseSystem = `You are a world-class Prompt Engineer. 
-Your goal is to take the user's raw, unstructured prompt and completely rewrite it into a highly optimized, structured prompt capable of producing the best possible AI output.
+Your goal is to take the user's raw, unstructured prompt and completely rewrite it into a highly optimized, structured, and beautiful prompt capable of producing the best possible AI output.
 
-Regardless of what the user says, YOU MUST ONLY return the optimized prompt itself. Do NOT include phrases like "Here is your optimized prompt:" or any conversational text.
+Regardless of what the user says, YOU MUST ONLY return the optimized prompt itself. Do NOT include conversational filler like "Here is your optimized prompt:".
 
-The optimized prompt MUST contain the following structured sections natively integrated:
-- **Goal:** [Clear definition of what needs to be achieved]
-- **Context:** [Relevant background information]
-- **Requirements:** [Actionable steps or constraints]
-- **Output Format:** [How the response should look e.g. markdown table, steps, etc]`;
+IMPORTANT FORMATTING RULES:
+1. Use elegant Markdown structure with clean sections (### Headers).
+2. Utilize bulleted lists (*) for readability, avoiding dense paragraphs.
+3. Bold important keywords to make them stand out.
+4. Keep the presentation visually appealing and professional.
+
+Ensure the prompt contains these native sections:
+### 🎯 Goal
+[Clear statement of what needs to be achieved]
+
+### 📖 Context
+[Actionable background info, structured cleanly in bullet points]
+
+### ⚙️ Requirements & Constraints
+* [Strict, actionable requirement 1]
+* [Strict, actionable requirement 2]
+* ...
+
+### 📋 Output Format
+[Explicit structure for how the final AI output should look]`;
 
   if (mode === 'coding') {
-    return baseSystem + `\n\nFor Software Engineering mode, heavily emphasize clean code, architecture, edge-cases, error-handling, and strict adherence to modern frameworks/practices. Specify the tech stack vividly and clearly. Require output to include necessary dependencies and inline code documentation.`;
+    return baseSystem + `\n\nAdditionally, for Software Engineering mode:
+- Add a "### 💻 Tech Stack" section at the top.
+- Emphasize clean architecture, modular code, and error-handling in the Requirements.
+- Mandate inline code documentation and edge-case coverage.`;
   }
 
   if (mode === 'startup') {
-    return baseSystem + `\n\nFor Startup/Business idea mode, heavily emphasize market analysis, target audience, monetization strategies, structured step-by-step validation, MVP features, and competitive advantages. Require output to be formatted in clear business plan sections.`;
+    return baseSystem + `\n\nAdditionally, for Startup/Business mode:
+- Add sections for "### 🚀 Target Audience" and "### 💡 Value Proposition".
+- Emphasize validation, monetization, and concrete MVP steps in the Requirements.
+- Use a professional, persuasive tone suitable for pitch-creation.`;
   }
 
   if (mode === 'dsa') {
-    return baseSystem + `\n\nFor DSA (Data Structures & Algorithms) mode, heavily emphasize defining explicitly: input/output boundaries, time complexity constraints (Big O), space complexity constraints, algorithm techniques to explore (e.g. DP, Sliding Window), and edge cases to test.`;
+    return baseSystem + `\n\nAdditionally, for DSA mode:
+- Add explicit sections: "### 📥 Input/Output Boundaries", "### ⏱️ Time/Space Complexity", and "### 🧪 Edge Cases".
+- Emphasize mathematical correctness and the exploration of multiple approaches.`;
   }
 
   return baseSystem; // Default 'general' mode

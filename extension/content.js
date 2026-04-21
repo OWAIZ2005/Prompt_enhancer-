@@ -13,11 +13,61 @@ const injectStyles = () => {
   const styleEl = document.createElement('style');
   styleEl.id = 'universal-enhancer-styles';
   styleEl.textContent = `
-    .universal-enhancer-btn {
+    .enhancer-widget-container {
       position: absolute;
       bottom: 10px;
       right: 10px;
       z-index: 10000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(30, 30, 36, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 4px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+    .enhancer-mode-select {
+      background: transparent;
+      color: #e4e6eb;
+      border: none;
+      outline: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 4px 6px 8px;
+      cursor: pointer;
+      appearance: none;
+    }
+    .enhancer-mode-select:hover {
+      color: white;
+    }
+    .enhancer-mode-select option {
+      background: #26262e;
+      color: #fff;
+    }
+    .enhancer-auto-btn {
+      background: transparent;
+      border: none;
+      color: #a0aab8;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .enhancer-auto-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e4e6eb;
+    }
+    .enhancer-auto-btn.active {
+      color: #ffd700;
+      background: rgba(255, 215, 0, 0.15);
+    }
+    .universal-enhancer-btn {
       background: linear-gradient(135deg, #6e8efb, #a777e3);
       color: white;
       border: none;
@@ -26,16 +76,14 @@ const injectStyles = () => {
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease-in-out;
       display: flex;
       align-items: center;
       gap: 6px;
-      font-family: 'Inter', -apple-system, sans-serif;
+      transition: all 0.2s ease;
     }
     .universal-enhancer-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(167, 119, 227, 0.3);
       background: linear-gradient(135deg, #5b7be0, #9661d9);
     }
     .universal-enhancer-btn:active {
@@ -56,7 +104,7 @@ const injectStyles = () => {
     }
     .enhancer-toast {
       position: absolute;
-      bottom: 45px;
+      bottom: 55px;
       right: 10px;
       background: #333;
       color: #fff;
@@ -83,7 +131,8 @@ const injectStyles = () => {
 
 const icons = {
   wand: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
-  spinner: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>'
+  spinner: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>',
+  lightning: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
 };
 
 // Fetch preferences from sync storage
@@ -188,50 +237,119 @@ const injectButtonForInput = (inputEl, prefs) => {
     parent.classList.add('enhancer-container');
   }
 
+  const widget = document.createElement('div');
+  widget.className = 'enhancer-widget-container';
+
+  // State
+  let currentMode = prefs.mode || 'general';
+  let isAutoEnabled = prefs.auto || false;
+
+  // Mode Dropdown
+  const select = document.createElement('select');
+  select.className = 'enhancer-mode-select';
+  const modes = [
+    { value: 'general', label: 'General' },
+    { value: 'coding', label: 'Coding' },
+    { value: 'startup', label: 'Startup' },
+    { value: 'dsa', label: 'DSA' }
+  ];
+  modes.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.value;
+    opt.textContent = m.label;
+    if (m.value === currentMode) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.title = "Enhancement Mode";
+  select.addEventListener('change', (e) => {
+    currentMode = e.target.value;
+    chrome.storage.sync.set({ enhancerMode: currentMode });
+    log(`Mode changed to ${currentMode}`);
+  });
+
+  const divider = document.createElement('div');
+  divider.style.width = '1px';
+  divider.style.height = '16px';
+  divider.style.background = 'rgba(255,255,255,0.1)';
+
+  const divider2 = document.createElement('div');
+  divider2.style.width = '1px';
+  divider2.style.height = '16px';
+  divider2.style.background = 'rgba(255,255,255,0.1)';
+
+  // Auto-Enhance Toggle
+  const autoToggle = document.createElement('button');
+  autoToggle.type = 'button';
+  autoToggle.className = `enhancer-auto-btn ${isAutoEnabled ? 'active' : ''}`;
+  autoToggle.innerHTML = icons.lightning;
+  autoToggle.title = "Toggle Auto-Enhance (Debounced)";
+  autoToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isAutoEnabled = !isAutoEnabled;
+    autoToggle.classList.toggle('active', isAutoEnabled);
+    chrome.storage.sync.set({ autoEnhance: isAutoEnabled });
+    showToast(widget, `Auto-Enhance ${isAutoEnabled ? 'Enabled' : 'Disabled'}`);
+  });
+
+  // Enhance Button
   const btn = document.createElement('button');
   btn.className = 'universal-enhancer-btn';
   btn.innerHTML = `${icons.wand} Enhance`;
   btn.type = 'button';
 
-  // Manual Trigger
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Refetch latest prefs when clicked
-    checkPreferences(async (latestPrefs) => {
-      const currentText = extractText(inputEl);
-      if (!currentText.trim()) {
-        showToast(btn, 'Please enter a prompt first.');
-        return;
-      }
-      const enhanced = await enhancePrompt(currentText, btn, latestPrefs.mode, false);
-      if (enhanced) setText(inputEl, enhanced);
-    });
+    const currentText = extractText(inputEl);
+    if (!currentText.trim()) {
+      showToast(widget, 'Please enter a prompt first.');
+      return;
+    }
+    const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
+    if (enhanced) setText(inputEl, enhanced);
   });
 
-  parent.appendChild(btn);
-  log("Button injected for element", inputEl);
+  widget.appendChild(select);
+  widget.appendChild(divider);
+  widget.appendChild(autoToggle);
+  widget.appendChild(divider2);
+  widget.appendChild(btn);
 
-  // Auto-Enhance Trigger (Debounced)
+  parent.appendChild(widget);
+  log("Widget injected for element", inputEl);
+
+  // Sync listener so other tabs updating storage affect this widget
+  const storageListener = (changes, namespace) => {
+    if (namespace === 'sync') {
+      if (changes.enhancerMode && changes.enhancerMode.newValue !== currentMode) {
+        currentMode = changes.enhancerMode.newValue;
+        select.value = currentMode;
+      }
+      if (changes.autoEnhance) {
+        isAutoEnabled = changes.autoEnhance.newValue;
+        autoToggle.classList.toggle('active', isAutoEnabled);
+      }
+    }
+  };
+  chrome.storage.onChanged.addListener(storageListener);
+
+  // Auto-Enhance Trigger
   let typingTimer;
   inputEl.addEventListener('input', () => {
-    checkPreferences((latestPrefs) => {
-      if (!latestPrefs.auto || !latestPrefs.enabled) return;
+    if (!isAutoEnabled) return;
 
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(async () => {
-        const currentText = extractText(inputEl);
-        // Only trigger if there is substantial text
-        if (currentText.trim().length > 10) {
-          const enhanced = await enhancePrompt(currentText, btn, latestPrefs.mode, true);
-          if (enhanced) {
-            setText(inputEl, enhanced);
-            showToast(btn, 'Auto-enhanced successfully!');
-          }
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(async () => {
+      const currentText = extractText(inputEl);
+      if (currentText.trim().length > 10) {
+        const enhanced = await enhancePrompt(currentText, btn, currentMode, true);
+        if (enhanced) {
+          setText(inputEl, enhanced);
+          showToast(widget, 'Auto-enhanced successfully!');
         }
-      }, 1500); // 1.5 seconds debounce
-    });
+      }
+    }, 1500);
   });
 };
 
@@ -275,8 +393,8 @@ if (document.readyState === 'loading') {
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'sync' && changes.enhancerEnabled) {
     if (changes.enhancerEnabled.newValue === false) {
-      log("Extension disabled live. Removing buttons.");
-      document.querySelectorAll('.universal-enhancer-btn').forEach(btn => btn.remove());
+      log("Extension disabled live. Removing widgets.");
+      document.querySelectorAll('.enhancer-widget-container').forEach(widget => widget.remove());
       document.querySelectorAll('[data-enhancer-injected="true"]').forEach(el => {
         el.dataset.enhancerInjected = 'false';
       });
