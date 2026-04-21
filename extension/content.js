@@ -20,52 +20,59 @@ const injectStyles = () => {
       z-index: 10000;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       pointer-events: none;
+      flex-shrink: 0;
+      height: 34px; /* Explicit height to prevent squashing */
+    }
+
+    /* Target the parent input box to ensure it doesn't clip our popup */
+    .enhancer-container {
+      overflow: visible !important;
     }
 
     .enhancer-options-panel {
       display: none;
       align-items: center;
-      flex-direction: row;
       gap: 2px;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(14px);
+      background: #111;
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 20px;
-      padding: 2px 4px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
       font-family: 'Inter', -apple-system, sans-serif;
-      transition: all 0.2s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      opacity: 0;
+      transform: translateX(10px);
       white-space: nowrap;
+      min-width: max-content;
+      max-width: calc(100vw - 120px);
+      z-index: 10001;
+      height: 28px; /* Standardize pill height */
+      box-sizing: border-box;
     }
 
-    .enhancer-widget-container.show-options .enhancer-options-panel {
-      display: flex;
+    .enhancer-options-panel.active {
+      display: flex !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: translateX(0);
     }
 
-    @media (max-width: 900px) {
-      .enhancer-widget-container {
-        flex-direction: column-reverse;
-        align-items: flex-end;
-      }
+    @media (max-width: 1024px) {
       .enhancer-options-panel {
-        flex-direction: column;
-        border-radius: 12px;
-        padding: 4px;
-        align-items: stretch;
-      }
-      .mode-grid-btn {
-        text-align: right;
-        padding: 6px 12px;
-      }
-      .enhancer-divider {
-        display: none;
+        max-width: calc(100vw - 80px); /* Leave room for the button */
       }
     }
 
-    .enhancer-options-panel, 
     .universal-enhancer-btn {
+      pointer-events: auto;
+      flex-shrink: 0;
+    }
+
+    .mode-grid-btn,
+    .enhancer-auto-btn {
       pointer-events: auto;
     }
 
@@ -73,24 +80,28 @@ const injectStyles = () => {
       background: transparent;
       color: #999;
       border: 1px solid transparent;
-      border-radius: 14px;
-      padding: 2px 8px;
-      font-size: 10px;
+      border-radius: 12px;
+      padding: 2px 10px;
+      font-size: 11px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
-    }
-      transition: all 0.2s ease;
-      white-space: nowrap;
+      height: 22px; /* Fixed button height inside pill */
+      display: flex;
+      align-items: center;
+      line-height: 1;
     }
 
     .mode-grid-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
       color: #fff;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .mode-grid-btn.active {
+      color: #fff;
       background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
       color: #fff;
       border-color: rgba(255, 255, 255, 0.2);
     }
@@ -377,31 +388,17 @@ const injectButtonForInput = (inputEl, prefs) => {
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
     const currentText = extractText(inputEl);
-    const isShowing = widget.classList.contains('show-options');
+    const isShowing = panel.classList.contains('active');
 
-    if (!currentText.trim() && !isShowing) {
-      // EMPTY + HIDDEN -> Show Options
-      widget.classList.add('show-options');
+    // Toggle logic
+    if (!currentText.trim() || isShowing) {
+      panel.classList.toggle('active');
       return;
     }
 
-    if (isShowing) {
-      // OPEN -> Hide Options (and Enhance if text exists)
-      widget.classList.remove('show-options');
-      if (currentText.trim()) {
-        const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
-        if (enhanced) setText(inputEl, enhanced);
-      }
-      return;
-    }
-
-    // CLOSED + TEXT -> Enhance Normally
-    if (currentText.trim()) {
-      const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
-      if (enhanced) setText(inputEl, enhanced);
-    } else {
-      widget.classList.add('show-options');
-    }
+    // If text exists and panel is closed -> Enhance
+    const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
+    if (enhanced) setText(inputEl, enhanced);
   });
 
   widget.appendChild(panel);
@@ -412,7 +409,7 @@ const injectButtonForInput = (inputEl, prefs) => {
   // Click outside to close
   const clickOutside = (e) => {
     if (!widget.contains(e.target)) {
-      widget.classList.remove('show-options');
+      panel.classList.remove('active');
     }
   };
   document.addEventListener('mousedown', clickOutside);
