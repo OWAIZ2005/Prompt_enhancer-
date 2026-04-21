@@ -14,6 +14,7 @@ const injectStyles = () => {
   styleEl.id = 'universal-enhancer-styles';
   styleEl.textContent = `
     .enhancer-widget-container {
+      position: absolute;
       bottom: 8px;
       right: 8px;
       z-index: 10000;
@@ -21,18 +22,6 @@ const injectStyles = () => {
       align-items: center;
       gap: 6px;
       pointer-events: none;
-    }
-
-    .enhancer-widget-container.floating {
-      position: absolute;
-    }
-
-    .enhancer-widget-container.toolbar {
-      position: relative;
-      bottom: 0;
-      right: 0;
-      margin-left: 2px;
-      margin-right: 2px;
     }
 
     .enhancer-options-panel {
@@ -44,29 +33,16 @@ const injectStyles = () => {
       background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 3px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       font-family: 'Inter', -apple-system, sans-serif;
       transition: all 0.2s ease;
       max-width: calc(100vw - 120px);
-      position: absolute;
-      bottom: 100%;
-      right: 0;
-      margin-bottom: 8px;
-      z-index: 10001;
     }
 
     .enhancer-widget-container.show-options .enhancer-options-panel {
       display: flex;
-    }
-
-    /* Fallback if floating at the top (rare) */
-    .enhancer-widget-container.floating-top .enhancer-options-panel {
-      bottom: auto;
-      top: 100%;
-      margin-bottom: 0;
-      margin-top: 8px;
     }
 
     .enhancer-options-panel, 
@@ -284,80 +260,29 @@ const setText = (element, newText) => {
   element.dispatchEvent(new Event('change', { bubbles: true }));
 };
 
-const findToolbar = (inputEl) => {
-  // 1. Site Specific Overrides
-  const hostname = window.location.hostname;
-  
-  // Gemini
-  if (hostname.includes('gemini.google.com')) {
-    const geminiToolbar = document.querySelector('[jsname="V67SHe"]');
-    if (geminiToolbar) return geminiToolbar;
-  }
-
-  // Claude
-  if (hostname.includes('claude.ai')) {
-    // Try to find the footer container near the input
-    let current = inputEl;
-    for (let i = 0; i < 5; i++) {
-      if (!current) break;
-      const footer = current.parentElement.querySelector('div.flex.items-end.gap-2.self-stretch');
-      if (footer) return footer;
-      current = current.parentElement;
-    }
-  }
-
-  // ChatGPT
-  if (hostname.includes('chatgpt.com')) {
-     const chatToolbar = document.querySelector('div.flex.items-center.gap-1\\.5');
-     if (chatToolbar) return chatToolbar;
-  }
-
-  // 2. Generic Search
-  // Look for siblings that contain buttons (mic, attach, image, etc)
-  let parent = inputEl.parentElement;
-  for (let i = 0; i < 4; i++) {
-    if (!parent) break;
-    const tools = parent.querySelectorAll('button, [role="button"]');
-    if (tools.length >= 2) {
-      // Find the row containing these tools
-      for (let t of tools) {
-        if (t.parentElement.offsetWidth > 50 && getComputedStyle(t.parentElement).display.includes('flex')) {
-          return t.parentElement;
-        }
-      }
-    }
-    parent = parent.parentElement;
-  }
-
-  return null;
-};
-
 const injectButtonForInput = (inputEl, prefs) => {
   if (inputEl.dataset.enhancerInjected === 'true') return;
   inputEl.dataset.enhancerInjected = 'true';
 
-  const toolbar = findToolbar(inputEl);
-  let targetContainer = toolbar;
-  let isToolbarMode = !!toolbar;
+  // Find a suitable parent container that is likely the visual box
+  let parent = inputEl.parentElement;
+  
+  let depth = 0;
+  while (parent && depth < 3) {
+    const style = getComputedStyle(parent);
+    if (parent.offsetWidth > inputEl.offsetWidth + 10 || style.position !== 'static') break;
+    parent = parent.parentElement;
+    depth++;
+  }
+  
+  if (!parent) parent = inputEl.parentElement;
 
-  if (!isToolbarMode) {
-    // Fallback to floating inside the textarea container
-    let parent = inputEl.parentElement;
-    let depth = 0;
-    while (parent && depth < 3) {
-      const style = getComputedStyle(parent);
-      if (parent.offsetWidth > inputEl.offsetWidth + 10 || style.position !== 'static') break;
-      parent = parent.parentElement;
-      depth++;
-    }
-    targetContainer = parent || inputEl.parentElement;
-    if (getComputedStyle(targetContainer).position === 'static') {
-      targetContainer.classList.add('enhancer-container');
-    }
+  if (getComputedStyle(parent).position === 'static') {
+    parent.classList.add('enhancer-container');
   }
 
   const widget = document.createElement('div');
-  widget.className = `enhancer-widget-container ${isToolbarMode ? 'toolbar' : 'floating'}`;
+  widget.className = 'enhancer-widget-container';
 
   const panel = document.createElement('div');
   panel.className = 'enhancer-options-panel';
@@ -451,13 +376,7 @@ const injectButtonForInput = (inputEl, prefs) => {
   widget.appendChild(panel);
   widget.appendChild(btn);
 
-  if (isToolbarMode) {
-    // In toolbars, we usually want to be to the left of the mic/send or specific position
-    // We'll just prepend to be visible early in the row
-    targetContainer.prepend(widget);
-  } else {
-    targetContainer.appendChild(widget);
-  }
+  parent.appendChild(widget);
 
   // Click outside to close
   const clickOutside = (e) => {
