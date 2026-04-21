@@ -6,7 +6,12 @@ const log = (...args) => {
   }
 };
 
-// Inject foundational styles into the page
+const icons = {
+  wand: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
+  spinner: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>',
+  lightning: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
+};
+
 const injectStyles = () => {
   if (document.getElementById('universal-enhancer-styles')) return;
 
@@ -14,19 +19,15 @@ const injectStyles = () => {
   styleEl.id = 'universal-enhancer-styles';
   styleEl.textContent = `
     .enhancer-widget-container {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      z-index: 10000;
+      position: fixed !important;
+      z-index: 2147483647 !important;
       display: flex;
       align-items: center;
-      gap: 8px;
+      flex-direction: row;
+      gap: 6px;
       pointer-events: none;
-      flex-shrink: 0;
-      height: 34px; /* Explicit height to prevent squashing */
     }
 
-    /* Target the parent input box to ensure it doesn't clip our popup */
     .enhancer-container {
       overflow: visible !important;
     }
@@ -34,104 +35,82 @@ const injectStyles = () => {
     .enhancer-options-panel {
       display: none;
       align-items: center;
-      gap: 2px;
-      background: #111;
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      gap: 6px;
+      background: #111111;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
-      padding: 2px 6px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
       font-family: 'Inter', -apple-system, sans-serif;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      opacity: 0;
-      transform: translateX(10px);
       white-space: nowrap;
-      min-width: max-content;
-      max-width: calc(100vw - 120px);
-      z-index: 10001;
-      height: 28px; /* Standardize pill height */
+      z-index: 2147483647;
       box-sizing: border-box;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) transparent;
+      pointer-events: auto;
+      max-width: calc(100vw - 80px);
+    }
+
+    .enhancer-options-panel::-webkit-scrollbar {
+      height: 3px;
+    }
+    .enhancer-options-panel::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
     }
 
     .enhancer-options-panel.active {
       display: flex !important;
-      opacity: 1 !important;
-      pointer-events: auto !important;
-      transform: translateX(0) translateY(0);
-    }
-
-    @media (max-width: 1024px) {
-      .enhancer-widget-container {
-        flex-direction: column-reverse;
-        align-items: flex-end;
-        height: auto;
-        bottom: 6px;
-      }
-      .enhancer-options-panel {
-        flex-direction: column;
-        height: auto;
-        width: 160px;
-        min-width: 160px;
-        padding: 4px;
-        border-radius: 12px;
-        transform: translateY(10px);
-        margin-bottom: 8px;
-        align-items: stretch;
-      }
-      .enhancer-options-panel.active {
-        transform: translateY(0);
-      }
-      .mode-grid-btn {
-        text-align: left;
-        margin: 1px 0;
-        height: 28px;
-      }
-    }
-
-    @media (max-width: 1024px) {
-      .enhancer-options-panel {
-        max-width: calc(100vw - 80px); /* Leave room for the button */
-      }
     }
 
     .universal-enhancer-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #000000;
+      border: 1.5px solid rgba(0, 0, 0, 0.1);
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       pointer-events: auto;
       flex-shrink: 0;
     }
-
-    .mode-grid-btn,
-    .enhancer-auto-btn {
-      pointer-events: auto;
-    }
+    .universal-enhancer-btn svg { width: 16px; height: 16px; color: #000; }
+    .universal-enhancer-btn:hover { transform: scale(1.1); background: #fff; }
 
     .mode-grid-btn {
       background: transparent;
-      color: #999;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      padding: 2px 10px;
+      color: #aaa;
+      border: none;
+      border-radius: 10px;
+      padding: 4px 10px;
       font-size: 11px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
-      height: 22px; /* Fixed button height inside pill */
       display: flex;
       align-items: center;
-      line-height: 1;
+      flex-shrink: 0;
+      white-space: nowrap;
+      pointer-events: auto;
     }
-
-    .mode-grid-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .mode-grid-btn.active {
+    .mode-grid-btn:hover, .mode-grid-btn.active {
       color: #fff;
       background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.1);
     }
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.2);
+
+    .enhancer-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(255,255,255,0.2);
+      margin: 0 2px;
+      flex-shrink: 0;
     }
 
     .enhancer-auto-btn {
@@ -139,103 +118,20 @@ const injectStyles = () => {
       border: none;
       color: #777;
       cursor: pointer;
-      padding: 4px;
+      padding: 5px;
       border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: center;
       transition: all 0.2s ease;
-    }
-    
-    .enhancer-auto-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-    
-    .enhancer-auto-btn.active {
-      color: #fff;
-    }
-
-    .universal-enhancer-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #ffffff;
-      color: #000000;
-      border: 1px solid #ffffff;
-      padding: 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       flex-shrink: 0;
-      margin-left: 2px;
+      pointer-events: auto;
     }
-    .universal-enhancer-btn svg {
-      width: 15px;
-      height: 15px;
-      color: #000;
-    }
-    .universal-enhancer-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
-      background: #fff;
-    }
-    .universal-enhancer-btn:active {
-      transform: scale(0.95);
-    }
-
-    .universal-enhancer-btn.loading {
-      background: #444;
-      border-color: #444;
-      cursor: not-allowed;
-    }
-    
-    .universal-enhancer-btn.loading svg {
-      color: #fff;
-    }
-
-    .enhancer-container {
-      position: relative;
-    }
-    
-    .enhancer-toast {
-      position: absolute;
-      bottom: 55px;
-      right: 12px;
-      background: #111;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-family: 'Inter', sans-serif;
-      z-index: 10001;
-      opacity: 0;
-      transition: all 0.3s ease;
-      pointer-events: none;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-      white-space: nowrap;
-    }
-    
-    .enhancer-toast.show {
-      opacity: 1;
-      transform: translateY(-5px);
-    }
+    .enhancer-auto-btn.active { color: #fff; }
   `;
   document.head.appendChild(styleEl);
   log("Styles injected.");
 };
 
-const icons = {
-  wand: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
-  spinner: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>',
-  lightning: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
-};
-
-// Fetch preferences from sync storage
 const checkPreferences = (callback) => {
   chrome.storage.sync.get(['enhancerEnabled', 'autoEnhance', 'enhancerMode'], (result) => {
     callback({
@@ -246,69 +142,13 @@ const checkPreferences = (callback) => {
   });
 };
 
-const saveToHistory = (enhancedText) => {
-  chrome.storage.local.get(['promptHistory'], (result) => {
-    let history = result.promptHistory || [];
-    history.unshift(enhancedText); // Add to beginning
-    if (history.length > 10) {     // Keep last 10
-      history = history.slice(0, 10);
-    }
-    chrome.storage.local.set({ promptHistory: history });
-    log("Saved prompt to history.");
-  });
-};
-
-const showToast = (btn, message, isError = false) => {
-  const container = btn.parentElement;
-  if (!container) return;
-
-  const toast = document.createElement('div');
-  toast.className = `enhancer-toast ${isError ? 'error' : ''} show`;
-  toast.innerText = message;
-  
-  container.appendChild(toast);
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 2500);
-};
-
-const enhancePrompt = async (text, button, mode, isAuto = false) => {
-  if (!text || text.trim() === '') return null;
-
-  // Set loading state
-  button.classList.add('loading');
-  button.innerHTML = icons.spinner;
-  log(`Enhancing prompt in ${mode} mode.`);
-
-  try {
-    const response = await chrome.runtime.sendMessage({
-      action: "ENHANCE_PROMPT",
-      prompt: text,
-      mode: mode
-    });
-
-    if (response.error) throw new Error(response.error);
-
-    button.classList.remove('loading');
-    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    setTimeout(() => button.innerHTML = icons.wand, 2000);
-
-    saveToHistory(response.enhancedPrompt);
-    return response.enhancedPrompt;
-  } catch (err) {
-    log("Enhancer Error:", err);
-    button.classList.remove('loading');
-    button.classList.add('error');
-    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-    showToast(button, err.message, true);
-    setTimeout(() => {
-      button.classList.remove('error');
-      button.innerHTML = icons.wand;
-    }, 3000);
-    return null;
+const setText = (element, newText) => {
+  if (element.tagName === 'TEXTAREA') {
+    element.value = newText;
+  } else if (element.hasAttribute('contenteditable')) {
+    element.innerText = newText;
   }
+  element.dispatchEvent(new Event('input', { bubbles: true }));
 };
 
 const extractText = (element) => {
@@ -317,43 +157,62 @@ const extractText = (element) => {
   return '';
 };
 
-const setText = (element, newText) => {
-  if (element.tagName === 'TEXTAREA') {
-    element.value = newText;
-  } else if (element.hasAttribute('contenteditable')) {
-    element.innerText = newText;
+const enhancePrompt = async (text, button, mode) => {
+  if (!text || text.trim() === '') return null;
+  button.classList.add('loading');
+  button.innerHTML = icons.spinner;
+  try {
+    const response = await chrome.runtime.sendMessage({ action: "ENHANCE_PROMPT", prompt: text, mode: mode });
+    button.innerHTML = icons.wand;
+    button.classList.remove('loading');
+    return response.enhancedPrompt;
+  } catch (err) {
+    button.innerHTML = icons.wand;
+    button.classList.remove('loading');
+    return null;
   }
-  
-  element.dispatchEvent(new Event('input', { bubbles: true }));
-  element.dispatchEvent(new Event('change', { bubbles: true }));
+};
+
+// Reposition the widget based on the input element's current position
+const repositionWidget = (inputEl, widget) => {
+  const rect = inputEl.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) return;
+
+  const btnWidth = 32;
+  const gap = 8;
+  const rightEdge = rect.right;
+  const bottomEdge = rect.bottom;
+
+  // Position wand button at bottom-right of input
+  const btnRight = window.innerWidth - rightEdge + gap;
+  const btnBottom = window.innerHeight - bottomEdge + gap;
+
+  widget.style.right = Math.max(4, btnRight) + 'px';
+  widget.style.bottom = Math.max(4, btnBottom) + 'px';
+  widget.style.left = 'auto';
+  widget.style.top = 'auto';
+
+  // Clamp panel width so it never goes off left edge
+  const panel = widget.querySelector('.enhancer-options-panel');
+  if (panel) {
+    const availableWidth = rightEdge - 10; // how much space is to the left of wand btn
+    panel.style.maxWidth = Math.min(560, availableWidth) + 'px';
+  }
 };
 
 const injectButtonForInput = (inputEl, prefs) => {
   if (inputEl.dataset.enhancerInjected === 'true') return;
   inputEl.dataset.enhancerInjected = 'true';
 
-  // Find a suitable parent container that is likely the visual box
-  let parent = inputEl.parentElement;
-  
-  let depth = 0;
-  while (parent && depth < 3) {
-    const style = getComputedStyle(parent);
-    if (parent.offsetWidth > inputEl.offsetWidth + 10 || style.position !== 'static') break;
-    parent = parent.parentElement;
-    depth++;
-  }
-  
-  if (!parent) parent = inputEl.parentElement;
-
-  if (getComputedStyle(parent).position === 'static') {
-    parent.classList.add('enhancer-container');
-  }
-
   const widget = document.createElement('div');
   widget.className = 'enhancer-widget-container';
 
   const panel = document.createElement('div');
   panel.className = 'enhancer-options-panel';
+
+  const btn = document.createElement('button');
+  btn.className = 'universal-enhancer-btn';
+  btn.innerHTML = icons.wand;
 
   let currentMode = prefs.mode || 'general';
   let isAutoEnabled = prefs.auto || false;
@@ -367,138 +226,90 @@ const injectButtonForInput = (inputEl, prefs) => {
     { value: 'coding_practice', label: 'Practice' }
   ];
 
-  const modeButtons = [];
   modes.forEach(m => {
     const mBtn = document.createElement('button');
     mBtn.className = `mode-grid-btn ${m.value === currentMode ? 'active' : ''}`;
     mBtn.textContent = m.label;
-    mBtn.type = 'button';
-    mBtn.addEventListener('click', (e) => {
-      e.preventDefault();
+    mBtn.addEventListener('click', () => {
       currentMode = m.value;
       chrome.storage.sync.set({ enhancerMode: currentMode });
-      modeButtons.forEach(b => b.classList.remove('active'));
-      mBtn.classList.add('active');
-      widget.classList.remove('show-options'); // Close panel after selection
+      panel.querySelectorAll('.mode-grid-btn').forEach(b => b.classList.toggle('active', b.textContent === m.label));
+      panel.classList.remove('active');
     });
     panel.appendChild(mBtn);
-    modeButtons.push(mBtn);
   });
 
   const divider = document.createElement('div');
   divider.className = 'enhancer-divider';
-  divider.style.width = '1px';
-  divider.style.height = '12px';
-  divider.style.background = 'rgba(255,255,255,0.15)';
-  divider.style.margin = '0 2px';
   panel.appendChild(divider);
 
   const autoToggle = document.createElement('button');
-  autoToggle.type = 'button';
   autoToggle.className = `enhancer-auto-btn ${isAutoEnabled ? 'active' : ''}`;
   autoToggle.innerHTML = icons.lightning;
   autoToggle.title = "Toggle Auto-Enhance";
-  autoToggle.addEventListener('click', (e) => {
-    e.preventDefault();
+  autoToggle.addEventListener('click', () => {
     isAutoEnabled = !isAutoEnabled;
     autoToggle.classList.toggle('active', isAutoEnabled);
     chrome.storage.sync.set({ autoEnhance: isAutoEnabled });
   });
   panel.appendChild(autoToggle);
 
-  // Enhance Button Structure
-  const btn = document.createElement('button');
-  btn.className = 'universal-enhancer-btn';
-  btn.title = "Enhance Prompt / Toggle Options";
-  btn.innerHTML = icons.wand;
-  btn.type = 'button';
-
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
-    const currentText = extractText(inputEl);
-    const isShowing = panel.classList.contains('active');
-
-    // Toggle logic
-    if (!currentText.trim() || isShowing) {
+    e.stopPropagation();
+    const text = extractText(inputEl);
+    if (!text.trim() || panel.classList.contains('active')) {
       panel.classList.toggle('active');
-      return;
+    } else {
+      const enhanced = await enhancePrompt(text, btn, currentMode);
+      if (enhanced) setText(inputEl, enhanced);
     }
-
-    // If text exists and panel is closed -> Enhance
-    const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
-    if (enhanced) setText(inputEl, enhanced);
   });
 
   widget.appendChild(panel);
   widget.appendChild(btn);
 
-  parent.appendChild(widget);
+  // Attach to body so it's never clipped by any parent overflow
+  document.body.appendChild(widget);
 
-  // Click outside to close
-  const clickOutside = (e) => {
+  // Position it now
+  repositionWidget(inputEl, widget);
+
+  // Reposition on scroll, resize, and focus
+  const updatePos = () => repositionWidget(inputEl, widget);
+  window.addEventListener('resize', updatePos);
+  window.addEventListener('scroll', updatePos, true);
+  inputEl.addEventListener('focus', updatePos);
+
+  // Also poll every 500ms to handle dynamic layout shifts (sidebars opening etc)
+  const poller = setInterval(() => {
+    if (!document.body.contains(inputEl)) {
+      clearInterval(poller);
+      widget.remove();
+      return;
+    }
+    updatePos();
+  }, 500);
+
+  document.addEventListener('mousedown', (e) => {
     if (!widget.contains(e.target)) {
       panel.classList.remove('active');
     }
-  };
-  document.addEventListener('mousedown', clickOutside);
-  
-  chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'sync') {
-      if (changes.enhancerMode) {
-        currentMode = changes.enhancerMode.newValue;
-        modeButtons.forEach(b => {
-          const mValue = modes.find(m => m.label === b.textContent)?.value;
-          b.classList.toggle('active', mValue === currentMode);
-        });
-      }
-      if (changes.autoEnhance) {
-        isAutoEnabled = changes.autoEnhance.newValue;
-        autoToggle.classList.toggle('active', isAutoEnabled);
-      }
-    }
-  });
-
-  let typingTimer;
-  inputEl.addEventListener('input', () => {
-    if (!isAutoEnabled) return;
-    clearTimeout(typingTimer);
-    typingTimer = setTimeout(async () => {
-      const currentText = extractText(inputEl);
-      if (currentText.trim().length > 10) {
-        const enhanced = await enhancePrompt(currentText, btn, currentMode, true);
-        if (enhanced) setText(inputEl, enhanced);
-      }
-    }, 1500);
   });
 };
 
 const scanForInputs = () => {
   checkPreferences((prefs) => {
     if (!prefs.enabled) return;
-    const textareas = document.querySelectorAll('textarea:not([data-enhancer-injected="true"])');
-    const editables = document.querySelectorAll('div[contenteditable="true"]:not([data-enhancer-injected="true"])');
-
-    textareas.forEach(el => injectButtonForInput(el, prefs));
-    editables.forEach(el => injectButtonForInput(el, prefs));
+    document.querySelectorAll('textarea:not([data-enhancer-injected="true"]), div[contenteditable="true"]:not([data-enhancer-injected="true"])')
+      .forEach(el => injectButtonForInput(el, prefs));
   });
 };
 
 const init = () => {
-  log("Initializing MutationObserver setup");
   injectStyles();
-  scanForInputs(); 
-
-  const observer = new MutationObserver((mutations) => {
-    let shouldScan = false;
-    for (let mutation of mutations) {
-      if (mutation.addedNodes.length > 0) {
-        shouldScan = true;
-        break;
-      }
-    }
-    if (shouldScan) scanForInputs();
-  });
-
+  scanForInputs();
+  const observer = new MutationObserver(() => scanForInputs());
   observer.observe(document.body, { childList: true, subtree: true });
 };
 
@@ -507,19 +318,3 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
-
-// Clean UI if settings turned off live
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === 'sync' && changes.enhancerEnabled) {
-    if (changes.enhancerEnabled.newValue === false) {
-      log("Extension disabled live. Removing widgets.");
-      document.querySelectorAll('.enhancer-widget-container').forEach(widget => widget.remove());
-      document.querySelectorAll('[data-enhancer-injected="true"]').forEach(el => {
-        el.dataset.enhancerInjected = 'false';
-      });
-    } else {
-      log("Extension enabled live. Scanning.");
-      scanForInputs();
-    }
-  }
-});
