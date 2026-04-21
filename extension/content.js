@@ -101,8 +101,8 @@ const injectStyles = () => {
     }
 
     .universal-enhancer-btn {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: #ffffff;
       color: #000000;
@@ -113,23 +113,21 @@ const injectStyles = () => {
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       flex-shrink: 0;
     }
-    
     .universal-enhancer-btn svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       color: #000;
     }
-    
     .universal-enhancer-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+      transform: scale(1.08);
+      box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
+      background: #fff;
     }
-    
     .universal-enhancer-btn:active {
-      transform: scale(0.9);
+      transform: scale(0.95);
     }
 
     .universal-enhancer-btn.loading {

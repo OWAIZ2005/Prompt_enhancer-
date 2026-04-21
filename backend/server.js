@@ -16,42 +16,46 @@ const openai = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1"
 });
 const getSystemPrompt = (mode) => {
-  const baseSystem = `You are an expert Prompt Compressor.
-Your ONLY goal is to transform the user's raw prompt into an ultra-dense, token-efficient "Mega-prompt" that provides maximum context to an LLM with the fewest possible words.
+  const baseSystem = `You are a professional Prompt Engineer.
+Transform the user's input into a high-quality, structured "Mega-prompt" for ChatGPT/Claude.
 
-STRICT RULES:
-1. ONLY return the compressed prompt. No filler like "Here is your prompt."
-2. DO NOT use verbose Markdown headers (e.g. ### 🎯 Goal) or space-wasting bulleted lists.
-3. Use a dense, cohesive block format natively understood by AI: "Role: [X]. Context: [Y]. Task: [Z]. Constraints: [C]."
-4. Compress phrasing: Instead of "You must make sure there are no bugs", use "Ensure zero bugs."
+STRICT CONSTRAINTS:
+1. NO INTROS/OUTROS (don't say "Here is your prompt").
+2. USE TOKEN-EFFICIENT MARKDOWN (concise headers, no extra fluff).
+3. GOAL: Maximize the utility of every credit.
 
-Core Structure (Merge these tight sentences together):
-Role: World-class AI assistant.
-Task: [Actionable task].
-Context: [Necessary background].
-Format: [Clear expected output format].`;
+Structure:
+### Role & Persona
+Act as [X]. 
+### Task Description
+[Detailed but concise task].
+### Requirements
+- [Mandatory constraint 1]
+- [Mandatory constraint 2]
+### Output Formatting
+[Strict output structure].`;
 
   if (mode === 'coding') {
-    return baseSystem + `\nConstraints: Strictly emphasize clean architecture, modular code, documented edge-cases, and rigid tech-stack adherence. Output pure code logic without generic explanations.`;
+    return baseSystem + `\nFocus: Clean architecture, modularity, and error-handling.`;
   }
 
   if (mode === 'startup') {
-    return baseSystem + `\nConstraints: Focus strictly on target demographic evaluation, market validation, monetization strategies, and concise MVP steps. Maintain a persuasive, business-centric tone.`;
+    return baseSystem + `\nFocus: Market validation, monetization, and MVP urgency.`;
   }
 
   if (mode === 'dsa') {
-    return baseSystem + `\nConstraints: Explicitly demand time/space complexity analysis (Big O), rigorous edge-case boundary testing, and mathematically optimal algorithm structures.`;
+    return baseSystem + `\nFocus: Optimality, Big O complexity, and edge-case coverage.`;
   }
 
   if (mode === 'presentation') {
-    return baseSystem + `\nConstraints: Transform the output into a pure slide-deck outline. Provide Target Audience, then immediately list Slides (Slide 1: [Title] - [1 sentence key points] - [1 visual suggestion]). Do not waste tokens on long descriptions.`;
+    return baseSystem + `\nFocus: Compelling slide-by-slide narrative structure (Topic -> Key Points -> Visuals).`;
   }
 
   if (mode === 'coding_practice') {
-    return baseSystem + `\nConstraints: Construct a real-world software engineering challenge. Provide compact Real-world Context, Strict Constraints, Expected Output specs, and 1 Optional Hint.`;
+    return baseSystem + `\nFocus: Real-world practical challenges with clear starting points and success criteria.`;
   }
 
-  return baseSystem; // Default 'general' mode
+  return baseSystem;
 };
 
 app.post('/enhance', async (req, res) => {
