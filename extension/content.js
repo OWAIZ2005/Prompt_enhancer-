@@ -15,12 +15,18 @@ const injectStyles = () => {
   styleEl.textContent = `
     .enhancer-widget-container {
       position: absolute;
-      bottom: 12px;
-      right: 12px;
+      bottom: 8px;
+      right: 8px;
       z-index: 10000;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      pointer-events: none; /* Container is passthrough */
+    }
+
+    .enhancer-options-panel, 
+    .universal-enhancer-btn {
+      pointer-events: auto; /* Buttons are clickable */
     }
     
     .enhancer-options-panel {
@@ -29,12 +35,12 @@ const injectStyles = () => {
       flex-wrap: wrap;
       justify-content: flex-end;
       gap: 4px;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(12px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      padding: 4px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 3px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
       font-family: 'Inter', -apple-system, sans-serif;
       transition: all 0.2s ease;
       max-width: calc(100vw - 120px);
@@ -83,8 +89,8 @@ const injectStyles = () => {
     }
 
     .universal-enhancer-btn {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: #ffffff;
       color: #000000;
@@ -95,13 +101,13 @@ const injectStyles = () => {
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       flex-shrink: 0;
-      margin-left: 4px;
+      margin-left: 2px;
     }
     .universal-enhancer-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       color: #000;
     }
     .universal-enhancer-btn:hover {
@@ -258,7 +264,22 @@ const injectButtonForInput = (inputEl, prefs) => {
   if (inputEl.dataset.enhancerInjected === 'true') return;
   inputEl.dataset.enhancerInjected = 'true';
 
-  const parent = inputEl.parentElement;
+  // Find a suitable parent container that is likely the visual box
+  let parent = inputEl.parentElement;
+  
+  // Sites like Gemini use many nested small containers
+  // We try to find a parent with a significant size or standard classes
+  let depth = 0;
+  while (parent && depth < 3) {
+    const style = getComputedStyle(parent);
+    // If it's a wide container or has a background/border, it's a good anchor
+    if (parent.offsetWidth > inputEl.offsetWidth + 10 || style.position !== 'static') break;
+    parent = parent.parentElement;
+    depth++;
+  }
+  
+  if (!parent) parent = inputEl.parentElement;
+
   if (getComputedStyle(parent).position === 'static') {
     parent.classList.add('enhancer-container');
   }
