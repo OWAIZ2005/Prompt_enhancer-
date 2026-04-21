@@ -16,64 +16,39 @@ const openai = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1"
 });
 const getSystemPrompt = (mode) => {
-  const baseSystem = `You are a world-class Prompt Engineer. 
-Your goal is to take the user's raw, unstructured prompt and completely rewrite it into a highly optimized, structured, and beautiful prompt capable of producing the best possible AI output.
+  const baseSystem = `You are an expert Prompt Compressor.
+Your ONLY goal is to transform the user's raw prompt into an ultra-dense, token-efficient "Mega-prompt" that provides maximum context to an LLM with the fewest possible words.
 
-Regardless of what the user says, YOU MUST ONLY return the optimized prompt itself. Do NOT include conversational filler like "Here is your optimized prompt:".
+STRICT RULES:
+1. ONLY return the compressed prompt. No filler like "Here is your prompt."
+2. DO NOT use verbose Markdown headers (e.g. ### 🎯 Goal) or space-wasting bulleted lists.
+3. Use a dense, cohesive block format natively understood by AI: "Role: [X]. Context: [Y]. Task: [Z]. Constraints: [C]."
+4. Compress phrasing: Instead of "You must make sure there are no bugs", use "Ensure zero bugs."
 
-IMPORTANT FORMATTING RULES:
-1. Use elegant Markdown structure with clean sections (### Headers).
-2. Utilize bulleted lists (*) for readability, avoiding dense paragraphs.
-3. Bold important keywords to make them stand out.
-4. Keep the presentation visually appealing and professional.
-
-Ensure the prompt contains these native sections:
-### 🎯 Goal
-[Clear statement of what needs to be achieved]
-
-### 📖 Context
-[Actionable background info, structured cleanly in bullet points]
-
-### ⚙️ Requirements & Constraints
-* [Strict, actionable requirement 1]
-* [Strict, actionable requirement 2]
-* ...
-
-### 📋 Output Format
-[Explicit structure for how the final AI output should look]`;
+Core Structure (Merge these tight sentences together):
+Role: World-class AI assistant.
+Task: [Actionable task].
+Context: [Necessary background].
+Format: [Clear expected output format].`;
 
   if (mode === 'coding') {
-    return baseSystem + `\n\nAdditionally, for Software Engineering mode:
-- Add a "### 💻 Tech Stack" section at the top.
-- Emphasize clean architecture, modular code, and error-handling in the Requirements.
-- Mandate inline code documentation and edge-case coverage.`;
+    return baseSystem + `\nConstraints: Strictly emphasize clean architecture, modular code, documented edge-cases, and rigid tech-stack adherence. Output pure code logic without generic explanations.`;
   }
 
   if (mode === 'startup') {
-    return baseSystem + `\n\nAdditionally, for Startup/Business mode:
-- Add sections for "### 🚀 Target Audience" and "### 💡 Value Proposition".
-- Emphasize validation, monetization, and concrete MVP steps in the Requirements.
-- Use a professional, persuasive tone suitable for pitch-creation.`;
+    return baseSystem + `\nConstraints: Focus strictly on target demographic evaluation, market validation, monetization strategies, and concise MVP steps. Maintain a persuasive, business-centric tone.`;
   }
 
   if (mode === 'dsa') {
-    return baseSystem + `\n\nAdditionally, for DSA mode:
-- Add explicit sections: "### 📥 Input/Output Boundaries", "### ⏱️ Time/Space Complexity", and "### 🧪 Edge Cases".
-- Emphasize mathematical correctness and the exploration of multiple approaches.`;
+    return baseSystem + `\nConstraints: Explicitly demand time/space complexity analysis (Big O), rigorous edge-case boundary testing, and mathematically optimal algorithm structures.`;
   }
 
   if (mode === 'presentation') {
-    return baseSystem + `\n\nAdditionally, for Presentation mode (e.g. Gamma/Tome):
-- Transform the output into a slide-deck structure.
-- Include an "### 🎯 Objective" and "### 👥 Target Audience" section.
-- Output a "### 📊 Slide-by-Slide Breakdown", where each slide has a title, key bullet points, and optional visual suggestions.`;
+    return baseSystem + `\nConstraints: Transform the output into a pure slide-deck outline. Provide Target Audience, then immediately list Slides (Slide 1: [Title] - [1 sentence key points] - [1 visual suggestion]). Do not waste tokens on long descriptions.`;
   }
 
   if (mode === 'coding_practice') {
-    return baseSystem + `\n\nAdditionally, for Coding Practice mode:
-- Construct a real-world coding challenge (beyond just DSA).
-- Include strict sections: "### 🏢 Real-world Context", "### ⚙️ Constraints / Edge Cases", "### 🎯 Expected Output", and "### 💡 Optional Hints".
-- Emphasize practical application, problem-solving, and clean coding paradigms.`;
+    return baseSystem + `\nConstraints: Construct a real-world software engineering challenge. Provide compact Real-world Context, Strict Constraints, Expected Output specs, and 1 Optional Hint.`;
   }
 
   return baseSystem; // Default 'general' mode

@@ -15,41 +15,67 @@ const injectStyles = () => {
   styleEl.textContent = `
     .enhancer-widget-container {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
+      bottom: 12px;
+      right: 12px;
       z-index: 10000;
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.90);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      gap: 8px;
+    }
+    
+    .enhancer-options-panel {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 12px;
-      padding: 4px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      padding: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateX(10px) scale(0.95);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       font-family: 'Inter', -apple-system, sans-serif;
     }
-    .enhancer-mode-select {
+
+    .enhancer-widget-container:hover .enhancer-options-panel,
+    .enhancer-options-panel:focus-within {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: all;
+    }
+
+    .mode-grid-btn {
       background: transparent;
-      color: #e4e6eb;
-      border: none;
-      outline: none;
-      font-size: 13px;
+      color: #aaa;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
       font-weight: 500;
-      padding: 6px 4px 6px 8px;
+      text-align: left;
       cursor: pointer;
-      appearance: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
-    .enhancer-mode-select:hover {
-      color: white;
-    }
-    .enhancer-mode-select option {
-      background: #000;
+
+    .mode-grid-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
     }
+
+    .mode-grid-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
     .enhancer-auto-btn {
-      background: transparent;
-      border: none;
+      grid-column: span 2;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #888;
       cursor: pointer;
       padding: 6px;
@@ -57,79 +83,91 @@ const injectStyles = () => {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
+      font-size: 11px;
       transition: all 0.2s ease;
+      margin-top: 2px;
     }
+    
     .enhancer-auto-btn:hover {
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
     }
+    
     .enhancer-auto-btn.active {
       color: #fff;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
     }
+
     .universal-enhancer-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
       background: #ffffff;
       color: #000000;
       border: 1px solid #ffffff;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 0;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
       transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      flex-shrink: 0;
     }
+    
+    .universal-enhancer-btn svg {
+      width: 18px;
+      height: 18px;
+      color: #000;
+    }
+    
     .universal-enhancer-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-      background: #e6e6e6;
-      border-color: #e6e6e6;
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
     }
+    
     .universal-enhancer-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+      transform: scale(0.9);
     }
+
     .universal-enhancer-btn.loading {
-      background: #888;
-      border-color: #888;
-      color: #111;
+      background: #444;
+      border-color: #444;
       cursor: not-allowed;
-      pointer-events: none;
-      opacity: 0.8;
     }
-    .universal-enhancer-btn.error {
-      background: #111;
-      border-color: #e74c3c;
-      color: #e74c3c;
+    
+    .universal-enhancer-btn.loading svg {
+      color: #fff;
     }
+
     .enhancer-container {
       position: relative;
     }
+    
     .enhancer-toast {
       position: absolute;
       bottom: 55px;
-      right: 10px;
+      right: 12px;
       background: #111;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #fff;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
       font-size: 12px;
       font-family: 'Inter', sans-serif;
       z-index: 10001;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: all 0.3s ease;
       pointer-events: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      white-space: nowrap;
     }
+    
     .enhancer-toast.show {
       opacity: 1;
-    }
-    .enhancer-toast.error {
-      border-color: #e74c3c;
-      color: #e74c3c;
+      transform: translateY(-5px);
     }
   `;
   document.head.appendChild(styleEl);
@@ -186,7 +224,7 @@ const enhancePrompt = async (text, button, mode, isAuto = false) => {
 
   // Set loading state
   button.classList.add('loading');
-  button.innerHTML = `${icons.spinner} ${isAuto ? 'Auto-Enhancing...' : 'Enhancing...'}`;
+  button.innerHTML = icons.spinner;
   log(`Enhancing prompt in ${mode} mode.`);
 
   try {
@@ -199,8 +237,8 @@ const enhancePrompt = async (text, button, mode, isAuto = false) => {
     if (response.error) throw new Error(response.error);
 
     button.classList.remove('loading');
-    button.innerHTML = `${icons.wand} Enhanced!`;
-    setTimeout(() => button.innerHTML = `${icons.wand} Enhance`, 2000);
+    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    setTimeout(() => button.innerHTML = icons.wand, 2000);
 
     saveToHistory(response.enhancedPrompt);
     return response.enhancedPrompt;
@@ -208,11 +246,11 @@ const enhancePrompt = async (text, button, mode, isAuto = false) => {
     log("Enhancer Error:", err);
     button.classList.remove('loading');
     button.classList.add('error');
-    button.innerHTML = 'Error!';
+    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
     showToast(button, err.message, true);
     setTimeout(() => {
       button.classList.remove('error');
-      button.innerHTML = `${icons.wand} Enhance`;
+      button.innerHTML = icons.wand;
     }, 3000);
     return null;
   }
@@ -247,69 +285,58 @@ const injectButtonForInput = (inputEl, prefs) => {
   const widget = document.createElement('div');
   widget.className = 'enhancer-widget-container';
 
-  // State
+  const panel = document.createElement('div');
+  panel.className = 'enhancer-options-panel';
+
   let currentMode = prefs.mode || 'general';
   let isAutoEnabled = prefs.auto || false;
 
-  // Mode Dropdown
-  const select = document.createElement('select');
-  select.className = 'enhancer-mode-select';
   const modes = [
-    { value: 'general', label: '🌐 General' },
-    { value: 'coding', label: '💻 Coding' },
-    { value: 'startup', label: '🚀 Startup' },
-    { value: 'dsa', label: '🧠 DSA' },
-    { value: 'presentation', label: '📊 Presentation' },
-    { value: 'coding_practice', label: '🏋️ Practice' }
+    { value: 'general', label: 'General' },
+    { value: 'coding', label: 'Coding' },
+    { value: 'startup', label: 'Startup' },
+    { value: 'dsa', label: 'DSA' },
+    { value: 'presentation', label: 'Presentation' },
+    { value: 'coding_practice', label: 'Practice' }
   ];
+
+  const modeButtons = [];
   modes.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.value;
-    opt.textContent = m.label;
-    if (m.value === currentMode) opt.selected = true;
-    select.appendChild(opt);
+    const mBtn = document.createElement('button');
+    mBtn.className = `mode-grid-btn ${m.value === currentMode ? 'active' : ''}`;
+    mBtn.textContent = m.label;
+    mBtn.type = 'button';
+    mBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentMode = m.value;
+      chrome.storage.sync.set({ enhancerMode: currentMode });
+      modeButtons.forEach(b => b.classList.remove('active'));
+      mBtn.classList.add('active');
+    });
+    panel.appendChild(mBtn);
+    modeButtons.push(mBtn);
   });
-  select.title = "Enhancement Mode";
-  select.addEventListener('change', (e) => {
-    currentMode = e.target.value;
-    chrome.storage.sync.set({ enhancerMode: currentMode });
-    log(`Mode changed to ${currentMode}`);
-  });
 
-  const divider = document.createElement('div');
-  divider.style.width = '1px';
-  divider.style.height = '16px';
-  divider.style.background = 'rgba(255,255,255,0.1)';
-
-  const divider2 = document.createElement('div');
-  divider2.style.width = '1px';
-  divider2.style.height = '16px';
-  divider2.style.background = 'rgba(255,255,255,0.1)';
-
-  // Auto-Enhance Toggle
   const autoToggle = document.createElement('button');
   autoToggle.type = 'button';
   autoToggle.className = `enhancer-auto-btn ${isAutoEnabled ? 'active' : ''}`;
-  autoToggle.innerHTML = icons.lightning;
-  autoToggle.title = "Toggle Auto-Enhance (Debounced)";
+  autoToggle.innerHTML = `${icons.lightning} Auto-Enhance`;
   autoToggle.addEventListener('click', (e) => {
     e.preventDefault();
-    e.stopPropagation();
     isAutoEnabled = !isAutoEnabled;
     autoToggle.classList.toggle('active', isAutoEnabled);
     chrome.storage.sync.set({ autoEnhance: isAutoEnabled });
-    showToast(widget, `Auto-Enhance ${isAutoEnabled ? 'Enabled' : 'Disabled'}`);
   });
+  panel.appendChild(autoToggle);
 
-  // Enhance Button
   const btn = document.createElement('button');
   btn.className = 'universal-enhancer-btn';
-  btn.innerHTML = `${icons.wand} Enhance`;
+  btn.title = "Enhance Prompt";
+  btn.innerHTML = icons.wand;
   btn.type = 'button';
 
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
-    e.stopPropagation();
     const currentText = extractText(inputEl);
     if (!currentText.trim()) {
       showToast(widget, 'Please enter a prompt first.');
@@ -319,44 +346,36 @@ const injectButtonForInput = (inputEl, prefs) => {
     if (enhanced) setText(inputEl, enhanced);
   });
 
-  widget.appendChild(select);
-  widget.appendChild(divider);
-  widget.appendChild(autoToggle);
-  widget.appendChild(divider2);
+  widget.appendChild(panel);
   widget.appendChild(btn);
 
   parent.appendChild(widget);
-  log("Widget injected for element", inputEl);
-
-  // Sync listener so other tabs updating storage affect this widget
-  const storageListener = (changes, namespace) => {
+  
+  chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
-      if (changes.enhancerMode && changes.enhancerMode.newValue !== currentMode) {
+      if (changes.enhancerMode) {
         currentMode = changes.enhancerMode.newValue;
-        select.value = currentMode;
+        modeButtons.forEach(b => {
+          const mValue = modes.find(m => m.label === b.textContent)?.value;
+          b.classList.toggle('active', mValue === currentMode);
+        });
       }
       if (changes.autoEnhance) {
         isAutoEnabled = changes.autoEnhance.newValue;
         autoToggle.classList.toggle('active', isAutoEnabled);
       }
     }
-  };
-  chrome.storage.onChanged.addListener(storageListener);
+  });
 
-  // Auto-Enhance Trigger
   let typingTimer;
   inputEl.addEventListener('input', () => {
     if (!isAutoEnabled) return;
-
     clearTimeout(typingTimer);
     typingTimer = setTimeout(async () => {
       const currentText = extractText(inputEl);
       if (currentText.trim().length > 10) {
         const enhanced = await enhancePrompt(currentText, btn, currentMode, true);
-        if (enhanced) {
-          setText(inputEl, enhanced);
-          showToast(widget, 'Auto-enhanced successfully!');
-        }
+        if (enhanced) setText(inputEl, enhanced);
       }
     }, 1500);
   });
