@@ -290,6 +290,7 @@ const injectButtonForInput = (inputEl, prefs) => {
       chrome.storage.sync.set({ enhancerMode: currentMode });
       modeButtons.forEach(b => b.classList.remove('active'));
       mBtn.classList.add('active');
+      widget.classList.remove('show-options'); // Close panel after selection
     });
     panel.appendChild(mBtn);
     modeButtons.push(mBtn);
