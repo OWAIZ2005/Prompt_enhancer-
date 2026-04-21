@@ -26,21 +26,42 @@ const injectStyles = () => {
 
     .enhancer-options-panel {
       display: none;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 4px;
+      align-items: center;
+      flex-direction: row;
+      gap: 2px;
       background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      padding: 6px;
+      border-radius: 20px;
+      padding: 2px 4px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       font-family: 'Inter', -apple-system, sans-serif;
       transition: all 0.2s ease;
-      max-width: 280px;
+      white-space: nowrap;
     }
 
     .enhancer-widget-container.show-options .enhancer-options-panel {
       display: flex;
+    }
+
+    @media (max-width: 900px) {
+      .enhancer-widget-container {
+        flex-direction: column-reverse;
+        align-items: flex-end;
+      }
+      .enhancer-options-panel {
+        flex-direction: column;
+        border-radius: 12px;
+        padding: 4px;
+        align-items: stretch;
+      }
+      .mode-grid-btn {
+        text-align: right;
+        padding: 6px 12px;
+      }
+      .enhancer-divider {
+        display: none;
+      }
     }
 
     .enhancer-options-panel, 
@@ -50,14 +71,15 @@ const injectStyles = () => {
 
     .mode-grid-btn {
       background: transparent;
-      color: #aaa;
+      color: #999;
       border: 1px solid transparent;
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 11px;
+      border-radius: 14px;
+      padding: 2px 8px;
+      font-size: 10px;
       font-weight: 500;
-      text-align: left;
       cursor: pointer;
+      transition: all 0.2s ease;
+    }
       transition: all 0.2s ease;
       white-space: nowrap;
     }
@@ -74,20 +96,16 @@ const injectStyles = () => {
     }
 
     .enhancer-auto-btn {
-      grid-column: span 2;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #888;
+      background: transparent;
+      border: none;
+      color: #777;
       cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
+      padding: 4px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      font-size: 11px;
       transition: all 0.2s ease;
-      margin-top: 2px;
     }
     
     .enhancer-auto-btn:hover {
@@ -97,8 +115,6 @@ const injectStyles = () => {
     
     .enhancer-auto-btn.active {
       color: #fff;
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .universal-enhancer-btn {
@@ -330,10 +346,18 @@ const injectButtonForInput = (inputEl, prefs) => {
     modeButtons.push(mBtn);
   });
 
+  const divider = document.createElement('div');
+  divider.className = 'enhancer-divider';
+  divider.style.width = '1px';
+  divider.style.height = '12px';
+  divider.style.background = 'rgba(255,255,255,0.15)';
+  divider.style.margin = '0 2px';
+  panel.appendChild(divider);
+
   const autoToggle = document.createElement('button');
   autoToggle.type = 'button';
   autoToggle.className = `enhancer-auto-btn ${isAutoEnabled ? 'active' : ''}`;
-  autoToggle.innerHTML = `${icons.lightning} Auto-Enhance`;
+  autoToggle.innerHTML = icons.lightning;
   autoToggle.title = "Toggle Auto-Enhance";
   autoToggle.addEventListener('click', (e) => {
     e.preventDefault();
