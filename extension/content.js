@@ -24,27 +24,21 @@ const injectStyles = () => {
     }
     
     .enhancer-options-panel {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: none;
+      align-items: center;
       gap: 4px;
       background: rgba(0, 0, 0, 0.95);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 6px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      opacity: 0;
-      transform: translateX(10px) scale(0.95);
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       font-family: 'Inter', -apple-system, sans-serif;
+      transition: all 0.2s ease;
     }
 
-    .enhancer-widget-container:hover .enhancer-options-panel,
-    .enhancer-options-panel:focus-within {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-      pointer-events: all;
+    .enhancer-widget-container.show-options .enhancer-options-panel {
+      display: flex;
     }
 
     .mode-grid-btn {
@@ -73,8 +67,7 @@ const injectStyles = () => {
     }
 
     .enhancer-auto-btn {
-      grid-column: span 2;
-      background: rgba(255, 255, 255, 0.05);
+      background: transparent;
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #888;
       cursor: pointer;
@@ -83,21 +76,7 @@ const injectStyles = () => {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      font-size: 11px;
       transition: all 0.2s ease;
-      margin-top: 2px;
-    }
-    
-    .enhancer-auto-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-    }
-    
-    .enhancer-auto-btn.active {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .universal-enhancer-btn {
@@ -115,6 +94,7 @@ const injectStyles = () => {
       transition: all 0.2s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       flex-shrink: 0;
+      margin-left: 4px;
     }
     .universal-enhancer-btn svg {
       width: 16px;
@@ -315,10 +295,17 @@ const injectButtonForInput = (inputEl, prefs) => {
     modeButtons.push(mBtn);
   });
 
+  const divider = document.createElement('div');
+  divider.style.width = '1px';
+  divider.style.height = '16px';
+  divider.style.background = 'rgba(255,255,255,0.1)';
+  panel.appendChild(divider);
+
   const autoToggle = document.createElement('button');
   autoToggle.type = 'button';
   autoToggle.className = `enhancer-auto-btn ${isAutoEnabled ? 'active' : ''}`;
-  autoToggle.innerHTML = `${icons.lightning} Auto-Enhance`;
+  autoToggle.innerHTML = icons.lightning;
+  autoToggle.title = "Toggle Auto-Enhance";
   autoToggle.addEventListener('click', (e) => {
     e.preventDefault();
     isAutoEnabled = !isAutoEnabled;
@@ -327,21 +314,41 @@ const injectButtonForInput = (inputEl, prefs) => {
   });
   panel.appendChild(autoToggle);
 
+  // Enhance Button Structure
   const btn = document.createElement('button');
   btn.className = 'universal-enhancer-btn';
-  btn.title = "Enhance Prompt";
+  btn.title = "Enhance Prompt / Toggle Options";
   btn.innerHTML = icons.wand;
   btn.type = 'button';
 
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
     const currentText = extractText(inputEl);
-    if (!currentText.trim()) {
-      showToast(widget, 'Please enter a prompt first.');
+    const isShowing = widget.classList.contains('show-options');
+
+    if (!currentText.trim() && !isShowing) {
+      // EMPTY + HIDDEN -> Show Options
+      widget.classList.add('show-options');
       return;
     }
-    const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
-    if (enhanced) setText(inputEl, enhanced);
+
+    if (isShowing) {
+      // OPEN -> Hide Options (and Enhance if text exists)
+      widget.classList.remove('show-options');
+      if (currentText.trim()) {
+        const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
+        if (enhanced) setText(inputEl, enhanced);
+      }
+      return;
+    }
+
+    // CLOSED + TEXT -> Enhance Normally
+    if (currentText.trim()) {
+      const enhanced = await enhancePrompt(currentText, btn, currentMode, false);
+      if (enhanced) setText(inputEl, enhanced);
+    } else {
+      widget.classList.add('show-options');
+    }
   });
 
   widget.appendChild(panel);
