@@ -1,0 +1,138 @@
+.enhancer-widget-container {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.enhancer-container {
+  overflow: visible !important;
+}
+
+.enhancer-options-panel {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  white-space: nowrap;
+  z-index: 2147483647;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  pointer-events: auto;
+  max-width: calc(100vw - 80px);
+}
+
+.enhancer-options-panel::-webkit-scrollbar {
+  height: 3px;
+}
+
+.enhancer-options-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.enhancer-options-panel.active {
+  display: flex !important;
+}
+
+.universal-enhancer-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #000000;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  flex-shrink: 0;
+}
+
+.universal-enhancer-btn svg {
+  width: 16px;
+  height: 16px;
+  color: #000;
+}
+
+.universal-enhancer-btn:hover {
+  transform: scale(1.1);
+  background: #fff;
+}
+
+.mode-grid-btn {
+  background: transparent;
+  color: #aaa;
+  border: none;
+  border-radius: 10px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.mode-grid-btn:hover,
+.mode-grid-btn.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.enhancer-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+.enhancer-auto-btn {
+  background: transparent;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.enhancer-auto-btn.active {
+  color: #fff;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
