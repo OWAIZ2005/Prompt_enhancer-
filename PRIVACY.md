@@ -11,7 +11,7 @@ The **Universal Prompt Enhancer** ("the Extension") is committed to protecting u
 
 ## 2. Permissions
 - **`<all_urls>` / Host Permissions**: This permission is used solely to detect supported AI platforms and inject the "Enhancer" UI into their message input fields. The Extension strictly filters its execution to only run on recognized AI platforms (e.g., ChatGPT, Gemini, Claude, etc.) and remains inactive on all other websites.
-- **`storage`**: Used only to save your mode preferences (e.g., "Coding", "Creative") and auto-enhance settings locally in your browser.
+- **`storage`**: Used only to save your mode preferences (e.g., "Coding", "Creative") locally in your browser.
 
 ## 3. Changes to This Policy
 We may update our Privacy Policy from time to time. Any changes will be posted on this page.

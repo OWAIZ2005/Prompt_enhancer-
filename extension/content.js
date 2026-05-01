@@ -59,10 +59,9 @@ const checkIsAIPlatform = () => {
 // ─── PREFERENCES ──────────────────────────────────────────────────────────────
 
 const checkPreferences = (callback) => {
-  chrome.storage.sync.get(['enhancerEnabled', 'autoEnhance', 'enhancerMode'], (result) => {
+  chrome.storage.sync.get(['enhancerEnabled', 'enhancerMode'], (result) => {
     callback({
       enabled: result.enhancerEnabled !== false,
-      auto: result.autoEnhance === true,
       mode: result.enhancerMode || 'general'
     });
   });

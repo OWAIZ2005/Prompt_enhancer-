@@ -15,7 +15,7 @@
   - 🧠 **Data Structures & Algorithms (DSA):** Requires explicit time/space complexities, boundaries, and techniques.
   - 📊 **Presentation Mode (NEW):** Generates structured slide-deck outlines (Title, Audience, Slide-by-slide visuals & points) perfect for importing into tools like Gamma or Tome.
   - 🏋️ **Coding Practice (NEW):** Generates authentic real-world engineering challenges with strict constraints, edge cases, and expected outputs.
-- **Auto-Enhance Mode (⚡):** Sit back and let the extension automatically debounce and enhance your prompt when you stop typing.
+
 - **Strict Markdown Enforcement:** All AI outputs use bulleted lists and `###` headers for pristine readability without conversational filler.
 - **Blazing Fast:** Powered by `llama-3.1-8b-instant` via Groq.
 
